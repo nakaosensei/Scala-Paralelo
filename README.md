@@ -232,5 +232,53 @@ object RunningMultipleCalcs extends App {
 ```
 
 ## Actors
+Atores são processos concorrentes que se comunicam por meio de trocas de messagens.
+A biblioteca de atores em Scala provê métodos sincronos e assincronos para troca de mensagens, eles podem usar futures quando as requisições forem assíncronas.
+
+### Ping Pong
+O nosso primeiro exemplo consiste em dois atores que trocam diversas mensagens para então terminar. O primeiro ator enviar a mensagem "ping", e o segundo envia a mensagem "pong" de volta.
+
+Vamos iniciar definindo as mensagens de troca, para tal usaremos case objects(semelhantes as case class), que serão:
+```
+case object Ping
+case object Pong
+case object Stop
+```
+
+
 
 ## Threads
+Alternativamente pode-se usar threads oriundas do Java, como segue no exemplo:
+```
+// this is terrible code and you should not use it in production
+class OrderProcessor extends Thread {
+  override def run() {
+    // runs forever
+    while(true) {
+      val orders = Orders.getOrders()
+      orders.foreach{ order =>
+        process(order)
+      }
+    }
+  }
+}
+
+val thread = new OrderProcessor()
+thread.start()
+// waits for the thread to finish
+thread.join()
+```
+
+Além das Threads tradicionais do java, é possível utilizar tarefas e ThreadPools, segue o exemplo:
+```
+class OrderProcessorRunnable(order: Order) extends Runnable {
+  override def run() {
+    order.process() // runs a long time
+    order.save()
+    order.user.save()
+  }
+}
+
+val pool = Executors.newFixedThreadPool(2) // 2 threads
+pool.submit(new OrderProcessorRunable(new Order()))
+```

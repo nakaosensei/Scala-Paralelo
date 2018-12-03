@@ -30,8 +30,9 @@ Além disso, note que existe um diretório src/main/scala, o sbt deve ter
 criado um arquivo 'Main' para você nesse caminho, abra-o e veja o código.
 ```object Main extends App { codigo }```
 Para que um projeto no sbt seja executado, deve haver um arquivo com um
-objeto Main que herde de App, o codigo dentro das chaves é o executado na execução
+objeto que herde de App, o codigo dentro das chaves é o executado na execução
 do projeto.
+Se houver mais que um arquivo que herde de App, no momento da execução é possível selecionar qual será executado.
 Retornando ao terminal, para entrar no prompt basta utilizar o comando sbt, caso voce
 ainda nao tenha entrado nele, uma vez que isso foi feito, chame os comandos:
 ```

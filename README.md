@@ -1,4 +1,4 @@
-# Scala-Paralelo
+# Scala
 ```Scala``` é uma linguagem de programação multiparadigma, por ser orientada a objeto e funcional simultâneamente, é fortemente tipada.
 
 É uma linguagem orientada a objeto no sentido que todo ```valor é um objeto```, tipos e comportamentos de objetos são descritos como ```classes``` e ```traits```.
@@ -38,3 +38,12 @@ ainda nao tenha entrado nele, uma vez que isso foi feito, chame os comandos:
 compile
 run
 ```
+
+## Sintaxe e características basicas da linguagem.
+ Scala possui uma ferramenta de edição e execução na nuvem chamada de scalafiddle.io, para
+ acessar os exemplos desenvolvidos para essa apresentação, acesse o link:
+ ```
+ https://scalafiddle.io/sf/NT2g0rk/23
+ ```
+
+## Scala paralelo.

@@ -148,6 +148,7 @@ object Example1 extends App {
         sleep(Random.nextInt(500))
         42
     }
+    def sleep(time: Long) { Thread.sleep(time) }
     println("before onComplete")
     f.onComplete {
         case Success(value) => println(s"Got the callback, meaning = $value")
@@ -161,6 +162,72 @@ object Example1 extends App {
     println("E ..."); sleep(100)
     println("F ..."); sleep(100)
     sleep(2000)
+}
+```
+### Criando um método que retorna um Future[T]
+É comum querer criar metodos que retornam futures, o exemplo a seguir define um metodo longRunningComputation e retorna um Future[Int], é importante notar que os callbacks são definidos na chamada.
+```
+import scala.concurrent.{Await, Future, future}
+import scala.concurrent.ExecutionContext.Implicits.global
+import scala.util.{Failure, Success}
+
+object Futures2 extends App {
+    implicit val baseTime = System.currentTimeMillis
+    def sleep(time: Long) { Thread.sleep(time) }
+    def longRunningComputation(i: Int): Future[Int] = future {
+        sleep(100)
+        i + 1
+    }
+
+    // this does not block
+    longRunningComputation(11).onComplete {
+        case Success(result) => println(s"result = $result")
+        case Failure(e) => e.printStackTrace
+    }
+
+    // important: keep the jvm from shutting down
+    sleep(1000)
+}
+```
+### Como usar multiplos futures em um for loop
+Esses exemplos mostraram como rodar UM processo em paralelo, por motivos didáticos, no entanto muitas vezes se faz neccessário executar diversas operações concorrentemente, esperar que todas completem, para então fazer algo com seus resultados combinados.
+
+```
+import scala.concurrent.{Future, future}
+import scala.concurrent.ExecutionContext.Implicits.global
+import scala.util.{Failure, Success}
+import scala.util.Random
+
+object Cloud {
+    def runAlgorithm(i: Int): Future[Int] = future {
+        sleep(Random.nextInt(500))
+        val result = i + 10
+        println(s"returning result from cloud: $result")
+        result
+    }
+    def sleep(time: Long) { Thread.sleep(time) }
+}
+
+object RunningMultipleCalcs extends App {
+    println("starting futures")
+    val result1 = Cloud.runAlgorithm(10)
+    val result2 = Cloud.runAlgorithm(20)
+    val result3 = Cloud.runAlgorithm(30)
+
+    println("before for-comprehension")
+    val result = for {
+        r1 <- result1
+        r2 <- result2
+        r3 <- result3
+    } yield (r1 + r2 + r3)
+
+    println("before onSuccess")
+    result onSuccess {
+        case result => println(s"total = $result")
+    }
+    def sleep(time: Long) { Thread.sleep(time) }
+    println("before sleep at the end")
+    sleep(2000)  // important: keep the jvm alive
 }
 ```
 
